@@ -56,14 +56,16 @@ class BaseView(View):
 	async def interaction_check(self, inter: Interaction) -> bool:
 		return inter.user.id == self.author.id
 
-	async def wait(self) -> bool:
+	async def on_timeout(self) -> bool:
 		await self.target_channel.send(embed=self.base_embed)
 
-		return await super().wait()
+		return await super().on_timeout()
 
 	@button(label="Publish", style=ButtonStyle.red, row=1)
 	async def publish_button(self, inter: Interaction, _button: Button) -> None:
 		await inter.response.edit_message(view=None)
+		
+		await self.target_channel.send(embed=self.base_embed)
 
 		self.stop()
 
